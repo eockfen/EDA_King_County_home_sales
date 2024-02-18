@@ -1,172 +1,92 @@
-# ds-project-template
+# Exploratory Data Analysis (EDA) of King County Home Sales
 
-Template for creating ds simple projects
+## Objectives
 
-## Requirements
+This is my first EDA project and I will explore the King County Homes Sales data set. It includes homes sold between May 2014 and May 2015 in King County area. 
+With this initial investigations I will gain insight into the dataset and will come up with advice to my imaginary client with respect to her specified requirements.   
 
-- pyenv
-- python==3.11.3
+## Business case
 
-## Setup
+I assume to work for a client, Nicole Johnson, who is willing to buy a house in a lively and central neighbourhood in middle price class. At the end of the EDA I will provide her with information about the best timing to buy and which area would be the best to aim for. 
 
-One of the first steps when starting any data science project is to create a virtual environment. For this project you have to create this environment from scratch yourself. However, you should be already familiar with the commands you will need to do so. The general workflow consists of... 
+## Explanation of individual variables for King County Data Set
 
-* setting the python version locally to 3.11.3
-* creating a virtual environment using the `venv` module
-* activating your newly created environment 
-* upgrading `pip` (This step is not absolutely necessary, but will save you trouble when installing some packages.)
-* installing the required packages via `pip`
+|Columns name | Description |
+|---- | ------------- |
+|house_id|unique identified for a house|
+|date | house was sold|
+|price| is prediction target|
+|bedroomsNumber| # of bedrooms|
+|bathroomsNumber| # of bathrooms|
+|sqft_livingsquare|footage of the home|
+|sqft_lotsquare|footage of the lot|
+|floorsTotal|floors (levels) in house|
+|waterfront| House which has a view to a waterfront|
+|view| quality of view|
+|condition| How good the condition is ( Overall )|
+|grade| overall grade given to the housing unit, based on King County grading system|
+|sqft_above|square footage of house apart from basement|
+|sqft_basement|square footage of the basement|
+|yr_built|Built Year|
+|yr_renovated|Year when house was renovated|
+|zipcode| zip|
+|lat|Latitude coordinate|
+|long|Longitude coordinate|
+|sqft_living15|The square footage of interior housing living space for the nearest 15 neighbors|
+|sqft_lot15|The square footage of the land lots of the nearest 15 neighbors|
 
-At the end, you want to make sure that people who are interested in your project can create an identical environment on their own computer in order to be able to run your code without running into errors. Therefore you can create a `requirements file` and add it to your repository. You can create such a file by running the following command: 
+## Workflow:
 
-```bash
-pip freeze > requirements.txt
-```
-
-*Note: In rare case such a requirements file created with `pip freeze` might not ensure that another (especially M1 chip) user can install and execute it properly. This can happen if libraries need to be compiled (e.g. SciPy). Then it also depends on environment variables and the actual system libraries.*
-
-### Unit testing (Optional)
-
-If you write python scripts for your data processing methods, you can also write unit tests. In order to run the tests execute in terminal:
-
-```bash
-pytest
-```
-
-This command will execute all the functions in your project that start with the word **test**.
-
-
-## Set up your Environment
-This repo contains a requirements.txt file with a list of all the packages and dependencies you will need. Before you install the virtual environment, make sure to install postgresql if you haven't done it before.
-
- - Check the **postgresql version**  by run the following commands:
-    ```sh
-    psql --version
-    ```
-    If you haven't installed it yet, begin at `step_1`. Otherwise, proceed to `step_2`.
-
-
-Before you can start with plotly in Jupyter Lab you have to install node.js (if you haven't done it before).
-- Check **Node version**  by run the following commands:
-    ```sh
-    node -v
-    ```
-    If you haven't installed it yet, begin at `step_2`. Otherwise, proceed to `step_3`.
-
-
-### **`macOS`** type the following commands : 
-
-- `Step_1:` Update Homebrew and install Postgresql by following commands:
-    ```sh
-    brew update
-    brew install postgresql@14
-    ```
-  Restart Your Terminal and than check the **postgresql version**  by run the following commands:
-     ```sh
-    psql --version
-    ```
-  If `psql --version` doesn't display the version, add PostgreSQL to your macOS PATH by following these steps:
-
-  * Find and copy the PostgreSQL bin directory on macOS.
+* Data Cleaning:  
   
-    The default path is typically `/Library/PostgreSQL/<version>/bin`, where is your PostgreSQL version.
-  * Edit the .zshrc or a similar .conf file using a text editor like Nano, Vim, or VSCode.
+  * Remove empty spaces in column names
+  * drop columns that are not needed or redundant (such as sale id)
+  * change data types if needed (convert numerical features to float)
 
-     ```sh
-    nano ~/.zshrc
-    ```
-  * Add the following line to the .zshrc file. Make sure to replace <version> with your PostgreSQL version.
-    ```sh
-    export PATH="/Library/PostgreSQL/<version>/bin:$PATH"
-    ```
-  * Save and exit the text editor. In nano, you can do this by pressing Ctrl + O, then Enter, and then Ctrl + X to exit.
-  * Restart Your Terminal
-    ```sh
-    source ~/.zshrc
-    psql --version
-    ```
+* Exploratory Data Analysis to answer business question  
+  
+  * descriptive statistics to identify outliers
+  * check for distribution of numerical features
+  * correlation matrix to check for correlation and scatter plots to check relation of numerical features to target feature (price)
 
+* Definition of  initial questions and hypotheses 
 
-- `Step_2:` Update Homebrew and install Node by following commands:
-    ```sh
-    brew update
-    brew install node
-    ```
+| Question | Hyothesis |
+| ---------|-----------|
+| Which lively and central area is still affordable for a budget in middle price range?| The closer to the city center, the more expensive| 
+|Does timing affect the price?| House prices fluctuate over the year and are lowest in seasons with low number of solds|
+|Do some areas have a better price performance?| Some areas offer a lower price per sqft|
 
-- `Step_3:` Install the virtual environment and the required packages by following commands:
+* Selecting only houses that are of interest for the client   
+  
+  * remove houses that are outside the interquartile range (IQR) to select only houses in the middle price range
+  * select only central houses (which are in a 3 miles radius around the city center)
+  * check correlation of price and distance to city center in these selected houses 
+  * visualization of houses in area of interest on geomap showing the prices 
 
-    ```BASH
-    pyenv local 3.11.3
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install --upgrade pip
-    pip install -r requirements.txt
-    ```
-### **`WindowsOS`** type the following commands :
+* When is the best timing to buy? Plotting price and number of house sales by month
 
-- `Step_1:` Update Chocolatey and install Postgresql by following commands:
-    ```sh
-    choco upgrade chocolatey
-    choco install postgresql14
-    ```
-    Restart Your Terminal and than check the **postgresql version**  by run the following commands:
-     ```sh
-    psql --version
-    ```
-  If `psql --version` doesn't display the version, add PostgreSQL to your winOS PATH by following these steps:
+* Ranking of cheapest areas 
+* Ranking of best price per sqft
+* Identification of areas with best price-performance ratio by living space and grade of the house 
 
-  * Find and copy the PostgreSQL bin directory on winOS.
+## Conclusion/ Summary:
 
-    The default path is typically `C:\Program Files\PostgreSQL\<version>\bin`, where <version> is your PostgreSQL version.
-
-  * Open Command Prompt as Administrator:
-
-    * Search for "Command Prompt" in your Start menu.
-    * Right-click on "Command Prompt" and select "Run as administrator."
-
-  * Add PostgreSQL to PATH:
-    * Replace 14 with your PostgreSQL version if it's different.
-
-    ```PowerShell
-    setx PATH "$($env:PATH);C:\Program Files\PostgreSQL\14\bin"
-    ```
-  * Close the Administrator Command Prompt window.
+* The middle price range in King County is between 322000-645000$, when taking the interquartile range of the prices of all house sales in King County. Within a radius of 3 miles around the city center, it is still possible to find affordable houses in a middle-price range budget. 
+* House prices fluctuate over the year and some seasons are higher priced than others. By plotting average prices by months of the two last years, it seems that february-april is the highest priced season. Although house prices are dependent on several factors e.g. market factors like demand, offer or economic factors like employment rate, which were not considered in this short-term analysis. 
+* House prices around the city center do not correlate with proximity to city center. Some neighbourhoods are more popular than others. 
+* Zipcode 98144 has the lowest price per sqft 
+* Zipcode 91809 has the highest price per sqft
+* Most houses with a low price per sqft are located east to the city center 
+* Zipcode 98116 (West Seattle) offers the best graded houses AND biggest living space for the smallest price
 
 
-  * Open a new Terminal and run the following command 
-    ```PowerShell
-    psql --version
-    ```
+## Recommendations
+* Radius of 3 miles around the city center offers affordable homes
+* Consider to buy in West Seattle or East of the city centre to get more living space and good grade at lowest price
+* Best timing to buy is in January or from May-September to avoid highly-priced seasons
 
-- `Step_2:` Update Chocolatey and install Node by following commands:
-    ```sh
-    choco upgrade chocolatey
-    choco install nodejs
-    ```
 
-- `Step_3:` Install the virtual environment and the required packages by following commands.
 
-   For `PowerShell` CLI :
 
-    ```PowerShell
-    python -m venv .venv
-    .venv\Scripts\Activate.ps1
-    pip install --upgrade pip
-    pip install -r requirements.txt
-    ```
 
-    For `Git-Bash` CLI :
-    ```
-    python -m venv .venv
-    source .venv/Scripts/activate
-    pip install --upgrade pip
-    pip install -r requirements.txt
-    ```
- 
-
- **`Note:`**
-    If you encounter an error when trying to run `pip install --upgrade pip`, try using the following command:
-
-   ```Bash
-   python.exe -m pip install --upgrade pip
-   ```
